@@ -19,4 +19,4 @@ Pin=np.power(10,(PdBm+65)/10)*.001
 Vout=np.linspace(0,40,16)
 
 
-plt.imshow(Pin,Vout,Zmag)
+plt.scatter(Pin,Vout,Zmag)

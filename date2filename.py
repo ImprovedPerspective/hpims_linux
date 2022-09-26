@@ -1,4 +1,4 @@
 import datetime
 t = datetime.datetime.now()
-datetimeString = t.strftime("%d_%m_%Y_%H_%M_%S_")
+datetimeString = t.strftime("%Y-%m-%d_%H-%M-%S")
 print(datetimeString)

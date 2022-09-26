@@ -16,12 +16,18 @@ from matplotlib import pyplot as plt
 import uvfunc as uv
 import subprocess
 import serial
+import datetime
 
 # Smith Chart Plotter
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 
 import os 
+
+# Data directory for Zmatrix
+dataDirectory = "data/"
+
 cwd = os.getcwd()
+# Data directory for acquire to run out of
 datDirectory  = cwd+"/./uvdma.dat"
 #p = subprocess.run([cwd+"/acquire"," 1 -ttledge -ttlinv -dcm -dcs 01 -f "+datDirectory])
 
@@ -43,10 +49,10 @@ E=np.load('cal.npy')
 
 
 #Desired Power Sweep
-PdBm=np.arange(-25,-19,2)
+PdBm=np.arange(-25,-19,1)
 
 #Desired Vout sweel
-Vout=np.linspace(0,40,1)
+Vout=np.linspace(0,40,10)
 
 Zmatrix=np.zeros((PdBm.size,Vout.size),dtype=complex)
 
@@ -264,10 +270,10 @@ for n in range(0,Vout.size):
         gamma_ph_deg=gamma_ph*180/np.pi
         
         Zmatrix[i,n]=-50*(gamma+1)/(gamma-1)
-        Zi = np.transpose(Zmatrix.imag/50).tolist()[0]
-        Zr = np.transpose(Zmatrix.real/50).tolist()[0]
-        fig = go.Figure(go.Scattersmith(imag=Zi, real=Zr))
-        fig.show()
+        #Zi = np.transpose(Zmatrix.imag/50).tolist()[0]
+        #Zr = np.transpose(Zmatrix.real/50).tolist()[0]
+        #fig = go.Figure(go.Scattersmith(imag=Zi, real=Zr))
+        #fig.show()
  
         
         
@@ -294,3 +300,9 @@ print("Closing AD2 device")
 ser.close()
 
 print(Zmatrix)
+t = datetime.datetime.now()
+datetimeString = t.strftime("%Y-%m-%d_%H-%M-%S")
+with open(dataDirectory+datetimeString+".npy","wb") as f:
+    np.save(f, Vout)
+    np.save(f, PdBm)
+    np.save(f, Zmatrix)
