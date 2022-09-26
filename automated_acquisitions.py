@@ -17,6 +17,8 @@ import uvfunc as uv
 import subprocess
 import serial
 
+# Smith Chart Plotter
+import plotly.graph_objects as go
 
 import os 
 cwd = os.getcwd()
@@ -242,10 +244,10 @@ for n in range(0,Vout.size):
         p = subprocess.run([cwd+"/acquire","1","-dcm","-dcs","01","-ttledge","-ttlinv"," -f "+datDirectory,cwd])
         data=uv.load2ch(datDirectory)
         spect=np.fft.fftshift(np.fft.fft(data,axis=0),axes=0)
-        ax[0].plot(data)
-        ax[1].plot(np.abs(spect))
-        print(data.shape)
-        plt.show()
+        #ax[0].plot(data)
+        #ax[1].plot(np.abs(spect))
+        #print(data.shape)
+        #plt.show(block=False)
         gamma=uv.computegamma(data)
 
         #Diagnostics
@@ -262,6 +264,11 @@ for n in range(0,Vout.size):
         gamma_ph_deg=gamma_ph*180/np.pi
         
         Zmatrix[i,n]=-50*(gamma+1)/(gamma-1)
+        Zi = np.transpose(Zmatrix.imag/50).tolist()[0]
+        Zr = np.transpose(Zmatrix.real/50).tolist()[0]
+        fig = go.Figure(go.Scattersmith(imag=Zi, real=Zr))
+        fig.show()
+ 
         
         
         
